@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: "Checkmark",
+  name: "CheckmarkComponent",
   props: {
     done: Boolean
   }

@@ -1,10 +1,12 @@
+<!-- eslint-disable vue/require-v-for-key -->
+<!-- eslint-disable vue/no-unused-vars -->
 <template>
   <ul>
     <li>
       <TodoInput @new-todo="post" />
     </li>
     <li v-for="(todo, i) in todos">
-      <Todo :todo="todo"
+      <TodoComponent :todo="todo"
             @done="done"
             @undone="undone"
       />
@@ -13,13 +15,13 @@
 </template>
 
 <script>
-import Todo from "@/components/Todo.vue";
+import TodoComponent from "@/components/TodoComponent.vue";
 import TodoInput from "@/components/TodoInput.vue";
 import {createTodo, doneTodo, readTodos, undoneTodo} from "@/api";
 
 export default {
   name: "TodoList",
-  components: {TodoInput, Todo},
+  components: {TodoInput, TodoComponent},
   data() {
     return {
       todos: []

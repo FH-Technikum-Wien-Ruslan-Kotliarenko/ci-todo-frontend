@@ -1,16 +1,16 @@
 <template>
 <div class="todo-item" @click="done">
   <span :class="{done: todo.done}">{{ todo.name }}</span>
-  <Checkmark :done="todo.done" />
+  <CheckmarkComponent :done="todo.done" />
 </div>
 </template>
 
 <script>
-import Checkmark from "@/components/icons/Checkmark.vue";
+import CheckmarkComponent from "@/components/icons/CheckmarkComponent.vue";
 
 export default {
-  name: "Todo",
-  components: {Checkmark},
+  name: "TodoComponent",
+  components: {CheckmarkComponent},
   props: {
     todo: Object
   },
