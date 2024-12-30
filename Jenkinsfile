@@ -34,12 +34,6 @@ pipeline {
             steps {
                 sh 'npm run test'
             }
-            post {
-                always {
-                    junit 'reports/**/*.xml'
-                    cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml'
-                }
-            }
         }
         stage('SonarQube Analysis') {
             steps {
