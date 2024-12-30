@@ -5,7 +5,6 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')
         SONAR_TOKEN = credentials('sonar-token-id')
         SONAR_HOST_URL = credentials('sonar-host-url')
-        SNYK_TOKEN = credentials('snyk-token-id')
         SLACK_WEBHOOK = credentials('slack-webhook-id')
     }
 
@@ -50,7 +49,13 @@ pipeline {
         }
         stage('Snyk Security Scan') {
             steps {
-                sh 'snyk test --severity-threshold=high'
+                echo 'Running Snyk...'
+                snykSecurity(
+                    snykInstallation: 'snyk-installation',
+                    snykTokenId: 'snyk-token-id',
+                    // place other optional parameters here, for example:
+                    additionalArguments: '--severity-threshold=high'
+                )
             }
         }
         stage('Build Docker Image') {
