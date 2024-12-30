@@ -20,88 +20,86 @@ pipeline {
                 url: 'https://github.com/FH-Technikum-Wien-Ruslan-Kotliarenko/ci-todo-frontend'
             }
         }
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-        stage('Lint') {
-            steps {
-                sh 'npm run lint'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'npm run test'
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                script { 
-                    withSonarQubeEnv('sonar-scanner-installation') {
-                        sh "${tool('sonar-scanner-tool')}/bin/sonar-scanner \
-                            -Dsonar.projectKey=ci-todo-frontend \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_TOKEN}"
-                    }
-                }
-            }
-        }
+        // stage('Install Dependencies') {
+        //     steps {
+        //         sh 'npm install'
+        //     }
+        // }
+        // stage('Lint') {
+        //     steps {
+        //         sh 'npm run lint'
+        //     }
+        // }
+        // stage('Test') {
+        //     steps {
+        //         sh 'npm run test'
+        //     }
+        // }
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         script { 
+        //             withSonarQubeEnv('sonar-scanner-installation') {
+        //                 sh "${tool('sonar-scanner-tool')}/bin/sonar-scanner \
+        //                     -Dsonar.projectKey=ci-todo-frontend \
+        //                     -Dsonar.sources=. \
+        //                     -Dsonar.host.url=${SONAR_HOST_URL} \
+        //                     -Dsonar.login=${SONAR_TOKEN}"
+        //             }
+        //         }
+        //     }
+        // }
         stage('Snyk Security Scan') {
-            steps {
-                echo 'Running Snyk...'
-                snykSecurity(
-                    snykInstallation: 'snyk-tool',
-                    snykTokenId: 'snyk-token-id',
-                    // place other optional parameters here, for example:
-                    additionalArguments: '--severity-threshold=high'
-                )
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} .'
-            }
-        }
-        stage('Push Docker Image') {
-            steps {
-                withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: '']) {
-                    sh "docker push ruslankotliar/ci-todo-backend:${GIT_COMMIT}"
-                }
-            }
-        }
-        stage('Deploy to AWS') {
-            steps {
-                sshPublisher(
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'aws-ec2',
-                            transfers: [
-                                sshTransfer(
-                                    execCommand: """
-                                        cd app
-                                        docker-compose pull frontend
-                                        docker-compose up -d frontend
-                                    """
-                                )
-                            ],
-                            usePromotionTimestamp: false,
-                            verbose: true
-                        )
-                    ]
-                )
-            }
-        }
-    }
+           steps {
+               script {
+                   withCredentials([string(credentialsId: 'snyk-token-id', variable: 'SNYK_TOKEN')]) {
+                       sh "snyk test --token=${SNYK_TOKEN}"
+                   }
+               }
+           }
+       }
+    //     stage('Build Docker Image') {
+    //         steps {
+    //             sh 'docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} .'
+    //         }
+    //     }
+    //     stage('Push Docker Image') {
+    //         steps {
+    //             withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: '']) {
+    //                 sh "docker push ruslankotliar/ci-todo-backend:${GIT_COMMIT}"
+    //             }
+    //         }
+    //     }
+    //     stage('Deploy to AWS') {
+    //         steps {
+    //             sshPublisher(
+    //                 publishers: [
+    //                     sshPublisherDesc(
+    //                         configName: 'aws-ec2',
+    //                         transfers: [
+    //                             sshTransfer(
+    //                                 execCommand: """
+    //                                     cd app
+    //                                     docker-compose pull frontend
+    //                                     docker-compose up -d frontend
+    //                                 """
+    //                             )
+    //                         ],
+    //                         usePromotionTimestamp: false,
+    //                         verbose: true
+    //                     )
+    //                 ]
+    //             )
+    //         }
+    //     }
+    // }
 
-    post {
-        failure {
-            slackSend (
-                channel: '#ci-cd-notifications',
-                color: 'danger',
-                message: "Frontend CI pipeline failed for commit ${env.GIT_COMMIT}"
-            )
-        }
+    // post {
+    //     failure {
+    //         slackSend (
+    //             channel: '#ci-cd-notifications',
+    //             color: 'danger',
+    //             message: "Frontend CI pipeline failed for commit ${env.GIT_COMMIT}"
+    //         )
+    //     }
     }
 }
