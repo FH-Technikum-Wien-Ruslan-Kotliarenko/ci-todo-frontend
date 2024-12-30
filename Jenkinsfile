@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')
@@ -11,14 +11,13 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent any
             steps {
                 git branch: 'main', 
                 url: 'https://github.com/FH-Technikum-Wien-Ruslan-Kotliarenko/ci-todo-frontend'
             }
         }
 
-        stage('NPM Tasks') {
+        stage('Node.js Tasks') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -57,27 +56,22 @@ pipeline {
                         }
                     }
                 }
-                stage('Snyk Security Scan') {
-                    steps {
-                        sh 'snyk test --severity-threshold=high'
-                    }
-                }
+            }
+        }
+
+        stage('Snyk Security Scan') {
+            steps {
+                sh 'snyk test --severity-threshold=high'
             }
         }
 
         stage('Build Docker Image') {
-            agent {
-                docker {
-                    image 'docker:latest'
-                }
-            }
             steps {
                 sh 'docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} .'
             }
         }
 
         stage('Push Docker Image') {
-            agent any
             steps {
                 withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: '']) {
                     sh 'docker push ruslankotliar/ci-todo-frontend:${GIT_COMMIT}'
@@ -86,7 +80,6 @@ pipeline {
         }
 
         stage('Deploy to AWS') {
-            agent any
             steps {
                 sshPublisher(
                     publishers: [
