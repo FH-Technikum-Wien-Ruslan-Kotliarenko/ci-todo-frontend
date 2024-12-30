@@ -11,7 +11,6 @@ pipeline {
 
     tools {
         nodejs 'NodeJS used for running npm commands in the pipeline' // Match the name you set in NodeJS configuration
-        SonarQubeScanner 'SonarQube Scanner Tool'
     }
 
     stages {
