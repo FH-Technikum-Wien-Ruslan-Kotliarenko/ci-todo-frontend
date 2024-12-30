@@ -11,6 +11,7 @@ pipeline {
 
     tools {
         nodejs 'NodeJS used for running npm commands in the pipeline' // Match the name you set in NodeJS configuration
+        snyk 'snyk-tool'
     }
 
     stages {
@@ -49,14 +50,10 @@ pipeline {
         //     }
         // }
         stage('Snyk Security Scan') {
-           steps {
-               script {
-                   withCredentials([string(credentialsId: 'snyk-token-id', variable: 'SNYK_TOKEN')]) {
-                       sh "snyk test --token=${SNYK_TOKEN}"
-                   }
-               }
-           }
-       }
+            steps {
+                sh 'snyk test --severity-threshold=high'
+            }
+        }
     //     stage('Build Docker Image') {
     //         steps {
     //             sh 'docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} .'
