@@ -6,6 +6,7 @@ pipeline {
         SONAR_TOKEN = credentials('sonar-token-id')
         SONAR_HOST_URL = credentials('sonar-host-url')
         SLACK_WEBHOOK = credentials('slack-webhook-id')
+        SNYK_TOKEN = credentials('snyk-token-id')
     }
 
     tools {
@@ -49,10 +50,13 @@ pipeline {
         }
         stage('Snyk Security Scan') {
             steps {
-                sh """
-                    ${tool('snyk-tool')}/bin/snyk auth ${env.SNYK_TOKEN}
-                    ${tool('snyk-tool')}/bin/snyk test --severity-threshold=high
-                """
+                echo 'Running Snyk...'
+                snykSecurity(
+                    snykInstallation: 'snyk-tool',
+                    snykTokenId: 'snyk-token-id',
+                    // place other optional parameters here, for example:
+                    additionalArguments: '--severity-threshold=high'
+                )
             }
         }
         stage('Build Docker Image') {
