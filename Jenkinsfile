@@ -50,8 +50,8 @@ pipeline {
         stage('Snyk Security Scan') {
             steps {
                 sh """
-                    snyk auth ${env.SNYK_TOKEN}
-                    snyk test --severity-threshold=high
+                    ${tool('snyk-tool')}/bin/snyk auth ${env.SNYK_TOKEN}
+                    ${tool('snyk-tool')}/bin/snyk test --severity-threshold=high
                 """
             }
         }
