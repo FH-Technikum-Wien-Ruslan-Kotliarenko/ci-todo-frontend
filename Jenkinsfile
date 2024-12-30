@@ -49,13 +49,10 @@ pipeline {
         }
         stage('Snyk Security Scan') {
             steps {
-                echo 'Running Snyk...'
-                snykSecurity(
-                    snykInstallation: 'snyk-installation',
-                    snykTokenId: 'snyk-token-id',
-                    // place other optional parameters here, for example:
-                    additionalArguments: '--severity-threshold=high'
-                )
+                sh """
+                    snyk auth ${env.SNYK_TOKEN}
+                    snyk test --severity-threshold=high
+                """
             }
         }
         stage('Build Docker Image') {
