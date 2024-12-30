@@ -12,7 +12,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/FH-Technikum-Wien-Ruslan-Kotliarenko/ci-todo-frontend'
+                git branch: 'main', 
+                url: 'https://github.com/FH-Technikum-Wien-Ruslan-Kotliarenko/ci-todo-frontend'
             }
         }
         stage('Install Dependencies') {
