@@ -11,6 +11,7 @@ pipeline {
 
     tools {
         nodejs 'NodeJS used for running npm commands in the pipeline' // Match the name you set in NodeJS configuration
+        SonarQubeScanner 'SonarQube Scanner Tool'
     }
 
     stages {
@@ -37,12 +38,14 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('My SonarQube Scanner Installation') {
-                    sh 'sonar-scanner \
-                        -Dsonar.projectKey=ci-todo-frontend \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=${SONAR_HOST_URL} \
-                        -Dsonar.login=${SONAR_TOKEN}'
+                script { 
+                    withSonarQubeEnv('sonar-scanner-installation') {
+                        sh "${tool('sonar-scanner-tool')}/bin/sonar-scanner \
+                            -Dsonar.projectKey=ci-todo-frontend \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN}"
+                    }
                 }
             }
         }
@@ -59,7 +62,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: '']) {
-                    sh 'docker push ruslankotliar/ci-todo-backend:${GIT_COMMIT}'
+                    sh "docker push ruslankotliar/ci-todo-backend:${GIT_COMMIT}"
                 }
             }
         }
