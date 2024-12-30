@@ -37,7 +37,7 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube Scanner') {
+                withSonarQubeEnv('SonarQube Scanner Tool') {
                     sh 'sonar-scanner \
                         -Dsonar.projectKey=ci-todo-frontend \
                         -Dsonar.sources=. \
