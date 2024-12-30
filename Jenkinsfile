@@ -11,8 +11,6 @@ pipeline {
 
     tools {
         nodejs 'NodeJS used for running npm commands in the pipeline' // Match the name you set in NodeJS configuration
-        docker 'Docker used for building and pushing Docker images'
-
     }
 
     stages {
