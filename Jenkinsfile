@@ -17,6 +17,11 @@ pipeline {
             }
         }
         stage('Install Dependencies') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                }
+            }
             steps {
                 sh 'npm install'
             }
