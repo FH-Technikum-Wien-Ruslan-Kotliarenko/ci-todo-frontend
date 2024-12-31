@@ -43,6 +43,13 @@ jobs:
         with:
             args: --severity-threshold=high
 
+      - name: Snyk Monitor
+        uses: snyk/actions/node@master
+        env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+            args: monitor
+
     #   - name: Build Docker Image
     #     run: docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${{ github.sha }} .
 
