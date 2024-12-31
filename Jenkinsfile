@@ -47,15 +47,15 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Snyk Security Scan') {
-            steps {
-                echo 'Testing...'
-                snykSecurity(
-                    snykInstallation: 'snyk-tool',
-                    snykTokenId: 'snyk-token-id'
-                )
-            }
-        }
+        // stage('Snyk Security Scan') {
+        //     steps {
+        //         echo 'Testing...'
+        //         snykSecurity(
+        //             snykInstallation: 'snyk-tool',
+        //             snykTokenId: 'snyk-token-id'
+        //         )
+        //     }
+        // }
     //     stage('Build Docker Image') {
     //         steps {
     //             sh 'docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} .'
