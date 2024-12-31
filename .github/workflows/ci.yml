@@ -38,17 +38,17 @@ jobs:
 
       - name: Snyk Monitor (Upload Dependencies)
         uses: snyk/actions/node@master
-        with:
-            args: monitor
         env:
             SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+            args: monitor
   
       - name: Snyk Test (Check for Vulnerabilities)
         uses: snyk/actions/node@master
-        with:
-            args: --severity-threshold=high
         env:
             SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+            args: --severity-threshold=high
 
 
     #   - name: Build Docker Image
