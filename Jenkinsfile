@@ -10,7 +10,6 @@ pipeline {
 
     tools {
         nodejs 'nodejs-tool' // Match the name you set in NodeJS configuration
-        docker 'docker-tool' // Match the name you set in Docker configuration
     }
 
     stages {
