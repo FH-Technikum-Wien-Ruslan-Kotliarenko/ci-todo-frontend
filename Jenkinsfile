@@ -19,43 +19,43 @@ pipeline {
                 url: 'https://github.com/FH-Technikum-Wien-Ruslan-Kotliarenko/ci-todo-frontend'
             }
         }
-        // stage('Install Dependencies') {
-        //     steps {
-        //         sh 'npm install'
-        //     }
-        // }
-        // stage('Lint') {
-        //     steps {
-        //         sh 'npm run lint'
-        //     }
-        // }
-        // stage('Test') {
-        //     steps {
-        //         sh 'npm run test'
-        //     }
-        // }
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         script { 
-        //             withSonarQubeEnv('sonar-scanner-installation') {
-        //                 sh "${tool('sonar-scanner-tool')}/bin/sonar-scanner \
-        //                     -Dsonar.projectKey=ci-todo-frontend \
-        //                     -Dsonar.sources=. \
-        //                     -Dsonar.host.url=${SONAR_HOST_URL} \
-        //                     -Dsonar.login=${SONAR_TOKEN}"
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Snyk Security Scan') {
-        //     steps {
-        //         echo 'Testing...'
-        //         snykSecurity(
-        //             snykInstallation: 'snyk-tool',
-        //             snykTokenId: 'snyk-token-id'
-        //         )
-        //     }
-        // }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Lint') {
+            steps {
+                sh 'npm run lint'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm run test'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script { 
+                    withSonarQubeEnv('sonar-scanner-installation') {
+                        sh "${tool('sonar-scanner-tool')}/bin/sonar-scanner \
+                            -Dsonar.projectKey=ci-todo-frontend \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN}"
+                    }
+                }
+            }
+        }
+        stage('Snyk Security Scan') {
+            steps {
+                echo 'Testing...'
+                snykSecurity(
+                    snykInstallation: 'snyk-tool',
+                    snykTokenId: 'snyk-token-id'
+                )
+            }
+        }
     //     stage('Build Docker Image') {
     //         steps {
     //             sh 'docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} .'
