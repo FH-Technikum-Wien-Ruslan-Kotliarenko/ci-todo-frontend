@@ -36,19 +36,19 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      - name: Snyk Monitor
+      - name: Snyk Monitor (Upload Dependencies)
         uses: snyk/actions/node@master
-        env:
-            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-            args: monitor --severity-threshold=high
-
-      - name: Snyk Security Scan
-        uses: snyk/actions/node@master
+            args: monitor
         env:
             SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+  
+      - name: Snyk Test (Check for Vulnerabilities)
+        uses: snyk/actions/node@master
         with:
             args: --severity-threshold=high
+        env:
+            SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
 
     #   - name: Build Docker Image
