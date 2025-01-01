@@ -58,14 +58,14 @@ pipeline {
         // }
         stage('Build Docker Image') {
             steps {
-                withTool('docker-tool') {
+                withDockerTool('docker-tool') {
                     sh "docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} ."
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
-                withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: 'https://index.docker.io/v1/']) {
+                withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: 'https://index.docker.io/v1/'], 'docker-tool') {
                     sh "docker push ruslankotliar/ci-todo-frontend:${GIT_COMMIT}"
                 }
             }
