@@ -10,6 +10,7 @@ pipeline {
 
     tools {
         nodejs 'nodejs-tool' // Match the name you set in NodeJS configuration
+        dockerTool 'docker-tool' // Match the name you set in Docker configuration
     }
 
     stages {
@@ -58,9 +59,7 @@ pipeline {
         // }
         stage('Build Docker Image') {
             steps {
-                withDockerTool('docker-tool') {
-                    sh "docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} ."
-                }
+                sh "docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} ."
             }
         }
         stage('Push Docker Image') {
