@@ -65,7 +65,7 @@ pipeline {
         }
         stage('Push Docker Image') {
             steps {
-                withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: 'https://index.docker.io/v1/'], 'docker-tool') {
+                withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: 'https://index.docker.io/v1/']) {
                     sh "docker push ruslankotliar/ci-todo-frontend:${GIT_COMMIT}"
                 }
             }
