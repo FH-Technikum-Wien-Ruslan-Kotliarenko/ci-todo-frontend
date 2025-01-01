@@ -57,9 +57,10 @@ pipeline {
         //     }
         // }
         stage('Build Docker Image') {
-            agent any
             steps {
-                sh "docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} ."
+                withTool('docker-tool') {
+                    sh "docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} ."
+                }
             }
         }
         stage('Push Docker Image') {
