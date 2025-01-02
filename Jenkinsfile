@@ -69,29 +69,29 @@ pipeline {
                 }
             }
         }
-    //     stage('Deploy to AWS') {
-    //         steps {
-    //             sshPublisher(
-    //                 publishers: [
-    //                     sshPublisherDesc(
-    //                         configName: 'aws-ec2',
-    //                         transfers: [
-    //                             sshTransfer(
-    //                                 execCommand: """
-    //                                     cd app
-    //                                     docker-compose pull frontend
-    //                                     docker-compose up -d frontend
-    //                                 """
-    //                             )
-    //                         ],
-    //                         usePromotionTimestamp: false,
-    //                         verbose: true
-    //                     )
-    //                 ]
-    //             )
-    //         }
-    //     }
-    // }
+        stage('Deploy to AWS') {
+            steps {
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'ec2-ssh-server',
+                            transfers: [
+                                sshTransfer(
+                                    execCommand: """
+                                        cd app
+                                        docker-compose pull frontend
+                                        docker-compose up -d frontend
+                                    """
+                                )
+                            ],
+                            usePromotionTimestamp: false,
+                            verbose: true
+                        )
+                    ]
+                )
+            }
+        }
+    }
 
     // post {
     //     failure {
