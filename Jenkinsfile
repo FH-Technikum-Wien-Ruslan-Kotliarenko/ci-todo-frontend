@@ -4,6 +4,7 @@ pipeline {
     environment {
         SONAR_TOKEN = credentials('sonar-token-id')
         SONAR_HOST_URL = credentials('sonar-host-url')
+        SLACK_FRONTEND_CHANNEL_ID = credentials('slack-frontend-channel-id')
     }
 
     tools {
@@ -94,17 +95,17 @@ pipeline {
         // }
 
         // Uncomment the following stage to test the failure notification
-        // stage('Test Failure') {
-        //     steps {
-        //         sh 'exit 1' // Any non-zero exit code will fail the pipeline
-        //     }
-        // }
+        stage('Test Failure') {
+            steps {
+                sh 'exit 1' // Any non-zero exit code will fail the pipeline
+            }
+        }
     }
 
     post {
         failure {
             slackSend (
-                channel: '#frontend',
+                channel: SLACK_FRONTEND_CHANNEL_ID,
                 color: 'danger',
                 message: "Frontend CI pipeline failed for commit ${env.GIT_COMMIT}"
             )

@@ -51,42 +51,50 @@ jobs:
     #         args: --severity-threshold=high
 
 
-        # Step 2: Login to Docker Hub
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
+      #   # Step 2: Login to Docker Hub
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v2
+      #   with:
+      #       username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #       password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      #   # Step 3: Build the Docker image
+      # - name: Build Docker Image
+      #   run: docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${{ github.sha }} .
+
+      #   # Step 4: Push the Docker image to Docker Hub
+      # - name: Push Docker Image
+      #   run: docker push ruslankotliar/ci-todo-frontend:${{ github.sha }}
+
+      # - name: Deploy to AWS EC2
+      #   uses: appleboy/ssh-action@v0.1.6
+      #   with:
+      #     host: ${{ secrets.EC2_HOST }}
+      #     username: ${{ secrets.EC2_USER }}
+      #     key: ${{ secrets.EC2_PRIVATE_KEY }}
+      #     port: 22
+      #     script: |
+      #       cd app
+      #       sed -i '/^FRONTEND_TAG=/d' .env  # Remove existing FRONTEND_TAG if present
+      #       echo "FRONTEND_TAG=${{ github.sha }}" >> .env  # Add or update FRONTEND_TAG
+      #       docker compose pull frontend
+      #       docker compose up -d frontend
+
+      # Uncomment this step to test failure notification
+      - name: Test Failure
+        run: exit 1 # Force a failure for testing purposes
+
+  notify:
+    if: failure()
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Post text to a Slack channel
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-        # Step 3: Build the Docker image
-      - name: Build Docker Image
-        run: docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${{ github.sha }} .
-
-        # Step 4: Push the Docker image to Docker Hub
-      - name: Push Docker Image
-        run: docker push ruslankotliar/ci-todo-frontend:${{ github.sha }}
-
-      - name: Deploy to AWS EC2
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd app
-            sed -i '/^FRONTEND_TAG=/d' .env  # Remove existing FRONTEND_TAG if present
-            echo "FRONTEND_TAG=${{ github.sha }}" >> .env  # Add or update FRONTEND_TAG
-            docker compose pull frontend
-            docker compose up -d frontend
-
-    #   - name: Notify on Failure
-    #     if: failure()
-    #     uses: slackapi/slack-github-action@v1.23.0
-    #     with:
-    #       payload: |
-    #         {
-    #           "text": "Frontend CI/CD Pipeline failed for commit `${{ github.sha }}` in repository `${{ github.repository }}`"
-    #         }
-    #     env:
-    #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_FRONTEND_CHANNEL_ID }}
+            text: "🚨 Frontend CI pipeline failed for commit ${{ github.sha }}. Check the logs for details."
