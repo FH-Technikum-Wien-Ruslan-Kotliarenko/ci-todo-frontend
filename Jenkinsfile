@@ -78,6 +78,8 @@ pipeline {
                             transfers: [
                                 sshTransfer(
                                     execCommand: """
+                                        FRONTEND_TAG=${GIT_COMMIT}
+
                                         cd app
                                         docker-compose pull frontend
                                         docker-compose up -d frontend
