@@ -2,10 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')
         SONAR_TOKEN = credentials('sonar-token-id')
         SONAR_HOST_URL = credentials('sonar-host-url')
-        SLACK_WEBHOOK = credentials('slack-webhook-id')
     }
 
     tools {
@@ -57,51 +55,57 @@ pipeline {
         //         )
         //     }
         // }
-        stage('Build Docker Image') {
-            steps {
-                sh "docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} ."
-            }
-        }
-        stage('Push Docker Image') {
-            steps {
-                withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: 'https://index.docker.io/v1/']) {
-                    sh "docker push ruslankotliar/ci-todo-frontend:${GIT_COMMIT}"
-                }
-            }
-        }
-        stage('Deploy to AWS') {
-            steps {
-                sshPublisher(
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'ec2-todo-app-ssh-server',
-                            transfers: [
-                                sshTransfer(
-                                    execCommand: """
-                                        cd app
-                                        sed -i '/^FRONTEND_TAG=/d' .env  # Remove existing FRONTEND_TAG if present
-                                        echo "FRONTEND_TAG=${GIT_COMMIT}" >> .env  # Add or update FRONTEND_TAG
-                                        docker compose pull frontend
-                                        docker compose up -d frontend
-                                    """
-                                )
-                            ],
-                            usePromotionTimestamp: false,
-                            verbose: true
-                        )
-                    ]
-                )
-            }
-        }
-    // }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         sh "docker build --platform linux/amd64 -t ruslankotliar/ci-todo-frontend:${GIT_COMMIT} ."
+        //     }
+        // }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         withDockerRegistry([credentialsId: 'dockerhub-credentials-id', url: 'https://index.docker.io/v1/']) {
+        //             sh "docker push ruslankotliar/ci-todo-frontend:${GIT_COMMIT}"
+        //         }
+        //     }
+        // }
+        // stage('Deploy to AWS') {
+        //     steps {
+        //         sshPublisher(
+        //             publishers: [
+        //                 sshPublisherDesc(
+        //                     configName: 'ec2-todo-app-ssh-server',
+        //                     transfers: [
+        //                         sshTransfer(
+        //                             execCommand: """
+        //                                 cd app
+        //                                 sed -i '/^FRONTEND_TAG=/d' .env  # Remove existing FRONTEND_TAG if present
+        //                                 echo "FRONTEND_TAG=${GIT_COMMIT}" >> .env  # Add or update FRONTEND_TAG
+        //                                 docker compose pull frontend
+        //                                 docker compose up -d frontend
+        //                             """
+        //                         )
+        //                     ],
+        //                     usePromotionTimestamp: false,
+        //                     verbose: true
+        //                 )
+        //             ]
+        //         )
+        //     }
+        // }
 
-    // post {
-    //     failure {
-    //         slackSend (
-    //             channel: '#ci-cd-notifications',
-    //             color: 'danger',
-    //             message: "Frontend CI pipeline failed for commit ${env.GIT_COMMIT}"
-    //         )
-    //     }
+        stage('Test Failure') {
+            steps {
+                sh 'exit 1' // Any non-zero exit code will fail the pipeline
+            }
+        }
+    }
+
+    post {
+        failure {
+            slackSend (
+                channel: '#frontend',
+                color: 'danger',
+                message: "Frontend CI pipeline failed for commit ${env.GIT_COMMIT}"
+            )
+        }
     }
 }
