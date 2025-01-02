@@ -74,7 +74,7 @@ pipeline {
                 sshPublisher(
                     publishers: [
                         sshPublisherDesc(
-                            configName: 'ec2-ssh-server',
+                            configName: 'ec2-todo-app-ssh-server',
                             transfers: [
                                 sshTransfer(
                                     execCommand: """
