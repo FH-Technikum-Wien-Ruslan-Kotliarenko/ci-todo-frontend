@@ -96,5 +96,5 @@ jobs:
           method: chat.postMessage
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
-            channel: ${{ secrets.SLACK_FRONTEND_CHANNEL_ID }}
-            text: "🚨 Frontend CI pipeline failed for commit ${{ github.sha }}. Check the logs for details."
+            "channel": "${{ secrets.SLACK_FRONTEND_CHANNEL_ID }}",
+            "text": "🚨 Frontend CI pipeline failed for commit ${{ github.sha }}. Check the logs for details."
