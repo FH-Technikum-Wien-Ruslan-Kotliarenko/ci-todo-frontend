@@ -66,17 +66,19 @@ jobs:
     #   - name: Push Docker Image
     #     run: docker push ruslankotliar/ci-todo-frontend:${{ github.sha }}
 
-    #   - name: Deploy to EC2
-    #     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/deploy/production'
-    #     uses: appleboy/ssh-action@v0.1.4
-    #     with:
-    #       host: your-ec2-public-ip
-    #       username: ubuntu
-    #       key: ${{ secrets.EC2_SSH_KEY }}
-    #       script: |
-    #         cd app
-    #         docker-compose pull frontend
-    #         docker-compose up -d frontend
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd app
+            sed -i '/^FRONTEND_TAG=/d' .env  # Remove existing FRONTEND_TAG if present
+            echo "FRONTEND_TAG=${{ github.sha }}" >> .env  # Add or update FRONTEND_TAG
+            docker compose pull frontend
+            docker compose up -d frontend
 
     #   - name: Notify on Failure
     #     if: failure()
