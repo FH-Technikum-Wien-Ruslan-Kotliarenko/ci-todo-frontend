@@ -95,11 +95,11 @@ pipeline {
         // }
 
         // Uncomment the following stage to test the failure notification
-        stage('Test Failure') {
-            steps {
-                sh 'exit 1' // Any non-zero exit code will fail the pipeline
-            }
-        }
+        // stage('Test Failure') {
+        //     steps {
+        //         sh 'exit 1' // Any non-zero exit code will fail the pipeline
+        //     }
+        // }
     }
 
     post {
