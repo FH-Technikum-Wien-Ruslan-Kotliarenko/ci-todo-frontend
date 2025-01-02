@@ -78,9 +78,9 @@ pipeline {
                             transfers: [
                                 sshTransfer(
                                     execCommand: """
-                                        FRONTEND_TAG=${GIT_COMMIT}
-
                                         cd app
+                                        sed -i '/^FRONTEND_TAG=/d' .env  # Remove existing FRONTEND_TAG if present
+                                        echo "FRONTEND_TAG=${GIT_COMMIT}" >> .env  # Add or update FRONTEND_TAG
                                         docker-compose pull frontend
                                         docker-compose up -d frontend
                                     """
