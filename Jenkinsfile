@@ -150,7 +150,7 @@ pipeline {
                                         # 3. (Optional) Wait or do some quick test or health check on green
 
                                         # 4. Flip Nginx to green in the config
-                                        sed -i 's/set \$active_upstream frontend_blue;/set \$active_upstream frontend_green;/' nginx.conf
+                                        sed -i 's/set \$active_frontend frontend_blue;/set \$active_frontend frontend_green;/' nginx.conf
 
                                         # 5. Reload Nginx
                                         docker compose exec nginx nginx -s reload

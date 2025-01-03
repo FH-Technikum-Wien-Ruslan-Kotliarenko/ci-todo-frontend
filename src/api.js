@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // get env vars from vite app
-const API_URL = import.meta.env.VITE_API_URL + '/todos';
+const API_URL = '/todos';
 
 const readTodos = async () => {
   let res = await axios.get(API_URL);
