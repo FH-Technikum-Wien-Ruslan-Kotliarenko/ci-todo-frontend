@@ -4,6 +4,7 @@ import axios from "axios";
 const API_URL = '/todos';
 
 const readTodos = async () => {
+  console.log('API_URL:', API_URL);
   let res = await axios.get(API_URL);
   return res.data;
 }
