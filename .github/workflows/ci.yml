@@ -81,8 +81,8 @@ jobs:
       #     port: 22
       #     script: |
       #       cd app
-      #       sed -i '/^BACKEND_TAG=/d' .env
-      #       echo "BACKEND_TAG=${{ github.sha }}" >> .env
+      #       sed -i '/^FRONTEND_TAG=/d' .env
+      #       echo "FRONTEND_TAG=${{ github.sha }}" >> .env
       #       docker compose pull frontend
       #       docker compose up -d frontend
       #   # IMPORTANT: Only run on deploy/production
