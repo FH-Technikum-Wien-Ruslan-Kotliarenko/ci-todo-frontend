@@ -138,10 +138,22 @@ pipeline {
                                 sshTransfer(
                                     execCommand: """
                                         cd app
-                                        sed -i '/^BACKEND_TAG=/d' .env
-                                        echo "BACKEND_TAG=\${GIT_COMMIT}" >> .env
-                                        docker compose pull frontend
-                                        docker compose up -d frontend
+
+                                        # 1. Update .env or environment variables for the new 'green' version
+                                        sed -i '/^FRONTEND_GREEN_TAG=/d' .env
+                                        echo "FRONTEND_GREEN_TAG=${GIT_COMMIT}" >> .env
+
+                                        # 2. Deploy 'green' service
+                                        docker compose pull frontend_green
+                                        docker compose up -d frontend_green
+
+                                        # 3. (Optional) Wait or do some quick test or health check on green
+
+                                        # 4. Flip Nginx to green in the config
+                                        sed -i 's/set \$active_upstream frontend_blue;/set \$active_upstream frontend_green;/' nginx.conf
+
+                                        # 5. Reload Nginx
+                                        docker compose exec nginx nginx -s reload
                                     """
                                 )
                             ],
