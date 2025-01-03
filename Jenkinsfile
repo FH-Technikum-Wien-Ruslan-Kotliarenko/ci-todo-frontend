@@ -7,7 +7,7 @@ pipeline {
         DOCKERHUB_USERNAME = credentials('dockerhub-username')
         SLACK_FRONTEND_CHANNEL_ID = credentials('slack-frontend-channel-id')
 
-        // Constants 
+        // Constants
         DOCKER_PLATFORM = "linux/amd64"
         MAIN_BRANCH = 'main'
         DEPLOY_PROD_BRANCH = 'deploy/production'
