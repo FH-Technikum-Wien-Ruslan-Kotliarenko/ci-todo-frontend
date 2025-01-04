@@ -6,8 +6,13 @@ import { authMe } from '@/api';
 
 import TodoList from "@/components/TodoList.vue";
 import LoginRegister from "@/components/LoginRegister.vue";
+import posthog from 'posthog-js';
 
 axios.defaults.withCredentials = true;
+
+posthog.init(import.meta.env.VITE_POST_HOG_API_KEY, {
+  api_host: 'https://app.posthog.com', // Change this if self-hosted
+});
 
 const isAuth = ref(false);
 const loading = ref(true);
@@ -20,6 +25,7 @@ onMounted(async () => {
     const authData = await authMe();
     if (authData?.userId) {
       isAuth.value = true;
+      posthog.identify(authData.userId);
     }
   } catch (err) {
     isAuth.value = false;

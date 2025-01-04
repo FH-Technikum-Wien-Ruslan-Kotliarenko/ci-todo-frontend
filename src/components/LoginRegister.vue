@@ -22,7 +22,7 @@
 
 <script>
 import { register, login } from "@/api";
-import posthog from "@/posthog";
+import posthog from "posthog-js";
 
 export default {
   data() {
