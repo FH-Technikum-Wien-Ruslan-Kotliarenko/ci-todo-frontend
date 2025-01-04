@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <!-- eslint-disable vue/no-unused-vars -->
 <template>
+  <button @click="logout">Logout</button>
   <ul>
     <li>
       <TodoInput @new-todo="post" />
@@ -17,7 +18,7 @@
 <script>
 import TodoComponent from "@/components/TodoComponent.vue";
 import TodoInput from "@/components/TodoInput.vue";
-import {createTodo, doneTodo, readTodos, undoneTodo} from "@/api";
+import {logout, createTodo, doneTodo, readTodos, undoneTodo} from "@/api";
 
 export default {
   name: "TodoList",
@@ -42,6 +43,16 @@ export default {
     async undone(id) {
       var todo = await undoneTodo(id);
       this.update(id, todo);
+    },
+    async logout() {
+      this.error = '';
+      this.successMsg = '';
+      try {
+        await logout();
+        this.successMsg = "Logged out successfully!";
+      } catch(err) {
+        this.error = err.response?.data?.error || "Logout failed";
+      }
     },
     update(id, todo) {
       this.todos.forEach((value, i) => {
