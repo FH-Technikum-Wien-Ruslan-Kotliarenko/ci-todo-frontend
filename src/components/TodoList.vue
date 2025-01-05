@@ -24,7 +24,8 @@
 import TodoComponent from "@/components/TodoComponent.vue";
 import TodoInput from "@/components/TodoInput.vue";
 import { logout, createTodo, doneTodo, readTodos, undoneTodo } from "@/api";
-import posthog from "posthog-js";
+
+import usePostHog from '@/usePostHog';
 
 export default {
   name: "TodoList",
@@ -39,10 +40,8 @@ export default {
   emits: ['loggedOut'],
   computed: {
     sortedTodos() {
-      // If feature toggling is off, just return `todos` as-is
-      // If on, we do the fancy "unfinished => next day, finished => day done" logic
-      // For demonstration, let's do something simple:
-      
+      const { posthog } = usePostHog();
+
       const enabled = posthog.isFeatureEnabled('todo-sorting');
       if (!enabled) {
         return this.todos;

@@ -22,7 +22,8 @@
 
 <script>
 import { register, login } from "@/api";
-import posthog from "posthog-js";
+
+import usePostHog from '@/usePostHog';
 
 export default {
   data() {
@@ -68,7 +69,7 @@ export default {
     }
   },
   async mounted() {
-    // Let’s assume we fetch which variant from posthog
+    const { posthog } = usePostHog();
     const abVariant = posthog.getFeatureFlag('register-button-variant');
 
     this.variant = abVariant;
