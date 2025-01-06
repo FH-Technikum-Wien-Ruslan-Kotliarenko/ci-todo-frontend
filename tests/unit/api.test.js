@@ -1,7 +1,7 @@
 // tests/unit/api.test.js
 import { describe, it, expect, vi } from 'vitest';
 import axios from 'axios';
-import * as api from '@/api';
+import * as api from '../../src/api';
 
 describe('api.js', () => {
   it('calls the correct endpoint for readTodos', async () => {

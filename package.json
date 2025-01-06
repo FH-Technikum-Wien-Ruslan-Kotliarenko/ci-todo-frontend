@@ -7,7 +7,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .js,.vue",
-    "test": "vitest --passWithNoTests"
+    "test": "vitest --passWithNoTests --coverage"
   },
   "dependencies": {
     "axios": "^1.2.0",
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.2.0",
+    "@vitest/coverage-c8": "^0.28.0",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^8.57.1",
     "jsdom": "^25.0.1",
